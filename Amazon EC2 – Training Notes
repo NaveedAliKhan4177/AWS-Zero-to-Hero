@@ -1,0 +1,135 @@
+Amazon EC2 – Training Notes
+1. What is Amazon EC2?
+EC2 (Elastic Compute Cloud) is an AWS service that provides virtual servers in the cloud.
+These virtual servers are called EC2 Instances.
+The word Elastic means we can increase or decrease computing resources according to our requirements.
+Example: Suppose a company needs a server to host its website. Instead of purchasing a physical server, it can launch an EC2 instance on AWS and use it as a virtual server.
+ 
+2. Why Do We Use EC2?
+EC2 helps us run applications without purchasing and maintaining physical servers.
+•	No physical hardware: We do not need to purchase physical servers.
+•	Scalability: We can increase or decrease server resources when required.
+•	Pay-as-you-go: We pay for the resources we use, according to the pricing model.
+•	Flexibility: We can select different operating systems and instance types.
+•	Less infrastructure management: AWS manages the underlying physical infrastructure.
+Example: If website traffic increases, we can launch a larger EC2 instance or add more instances to handle the traffic.
+ 
+3. EC2 Instance Types
+AWS provides different instance families based on application requirements.
+ 
+Instance Type	Purpose	Example Use
+General Purpose	Balanced CPU, memory and networking	Web servers
+Compute Optimized	High CPU performance	Data processing
+Memory Optimized	High memory capacity	Databases
+Storage Optimized	High storage performance	Large data workloads
+Accelerated Computing	Uses GPUs or specialized hardware	Machine learning
+4. AWS Regions and Availability Zones
+Region
+A Region is a separate geographical area where AWS operates its infrastructure.
+Example: Mumbai (ap-south-1) is an AWS Region in India.
+Availability Zone (AZ)
+An Availability Zone is an isolated location within an AWS Region. A Region contains multiple Availability Zones.
+Availability Zones help improve application availability and fault tolerance.
+ 
+Example: If an application runs in two Availability Zones and one becomes unavailable, the application may continue running in the other, provided it is configured for failover.
+5. Practical Project – Deploy Jenkins on an EC2 Instance
+Project objective: Launch an Ubuntu EC2 instance, install Jenkins on it, and open the Jenkins dashboard using a web browser.
+ 
+Step 1: Launch an EC2 Instance
+1.	Sign in to the AWS Management Console.
+2.	Search for EC2 and open the EC2 service.
+3.	Select Instances from the left navigation panel.
+4.	Click Launch instances.
+5.	Enter the instance name: Jenkins-Server.
+6.	Select Ubuntu as the Amazon Machine Image (AMI).
+7.	Choose an instance type, such as t2.micro, if it is available and eligible for your account.
+8.	Create or select a key pair.
+9.	Configure the network settings and security group.
+10.	Click Launch instance.
+ 
+Step 2: Create a Key Pair
+A key pair is used to securely connect to an EC2 instance.
+•	Public key: Stored on the EC2 instance.
+•	Private key: Downloaded and kept by the user, usually as a .pem file.
+Example key pair name: jenkins-key
+ 
+Step 3: Configure Security Groups
+A Security Group acts as a virtual firewall for an EC2 instance. It controls inbound and outbound traffic.
+Type	Port	Purpose
+SSH	22	Connect to the Ubuntu server
+Custom TCP	8080	Open the Jenkins dashboard
+For SSH, select My IP as the source. For Jenkins, allow access only from the IP address or network that needs to use the dashboard.
+ 
+Step 4: Connect to the EC2 Instance
+11.	Select the instance in the EC2 console.
+12.	Copy its Public IPv4 address.
+13.	Open a terminal on your computer.
+14.	Go to the folder containing your .pem key file.
+15.	Connect using SSH.
+Example command:
+chmod 400 jenkins-key.pem
+
+ssh -i jenkins-key.pem ubuntu@<PUBLIC-IP>
+Replace <PUBLIC-IP> with the public IPv4 address of your EC2 instance.
+If the connection is successful, you will enter the Ubuntu server terminal.
+ 
+Step 5: Update Ubuntu Packages
+Run the following command after connecting to the instance:
+sudo apt update
+This updates the package information on the Ubuntu server.
+Step 6: Install Java
+Jenkins requires Java to run. Install Java 21:
+sudo apt install -y fontconfig openjdk-21-jre
+Check the Java installation:
+java -version
+ 
+Step 7: Install Jenkins
+Add the official Jenkins Long-Term Support repository:
+sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc \
+https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key
+echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc]" \
+https://pkg.jenkins.io/debian-stable binary/ | \
+sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+Update the package list:
+sudo apt update
+Install Jenkins:
+sudo apt install -y jenkins
+These commands use the official Jenkins LTS installation instructions.
+Step 8: Start Jenkins
+Start the Jenkins service:
+sudo systemctl start jenkins
+Enable Jenkins to start automatically when the server restarts:
+sudo systemctl enable jenkins
+Check the Jenkins service status:
+sudo systemctl status jenkins
+If the installation is successful, the status should show:
+Active: active (running)
+ 
+Step 9: Open Jenkins in a Browser
+16.	Go to the AWS EC2 console.
+17.	Select your Jenkins instance.
+18.	Copy its Public IPv4 address.
+19.	Open a web browser.
+20.	Enter the following address:
+http://<PUBLIC-IP>:8080
+Example:
+http://13.201.XX.XX:8080
+The Jenkins setup page should appear.
+Step 10: Unlock Jenkins
+Jenkins generates an initial administrator password during installation.
+Run this command on your EC2 terminal:
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+21.	Copy the password displayed in the terminal.
+22.	Paste it into the Jenkins browser page.
+23.	Click Continue.
+24.	Select Install suggested plugins.
+25.	Create your administrator username and password.
+26.	Complete the Jenkins setup.
+ 
+6. Final Project Result
+Jenkins is now installed and running on an AWS EC2 instance.
+The deployment flow is:
+ 
+Final URL:
+http://<PUBLIC-IP>:8080
+End of Amazon EC2 Training Notes.
