@@ -1,0 +1,100 @@
+Amazon VPC – Training Notes
+1. What is Amazon VPC?
+VPC (Virtual Private Cloud) is an AWS service that allows us to create a private virtual network inside the AWS cloud.
+Inside a VPC, we can launch AWS resources such as EC2 instances, databases, and load balancers.
+We can control the network by defining IP address ranges, subnets, route tables, and security settings.
+Real-life example – Gated Community
+Imagine a gated community:
+•	The entire community represents the VPC.
+•	The individual houses represent EC2 instances.
+•	Different residential blocks represent Subnets.
+•	The main entrance gate represents the Internet Gateway.
+•	The road directions represent Route Tables.
+•	The security guards represent Security Groups.
+Just like a gated community controls who can enter and leave, a VPC helps control network communication in AWS.
+ 
+2. Why Do We Use VPC?
+VPC helps us create a secure and controlled network environment for AWS resources.
+Main purposes:
+•	Network isolation: Keep resources inside a logically isolated network.
+•	Security: Control incoming and outgoing network traffic.
+•	IP management: Define private IP address ranges for resources.
+•	Subnet separation: Separate public-facing and internal resources.
+•	Traffic control: Decide how network traffic moves between resources and the internet.
+Example: A company can keep its web server in a public subnet and its database in a private subnet.
+ 
+3. Main Components of AWS VPC
+ 
+3.1 IP Address Range (CIDR)
+CIDR stands for Classless Inter-Domain Routing.
+A CIDR block defines the IP address range available inside a VPC.
+Example:
+10.0.0.0/16
+This CIDR block defines the IP address range for the VPC.
+Simple example: Think of a VPC as a large residential area. The CIDR block defines the total address space available for that area.
+3.2 Subnets
+A subnet is a smaller network created inside a VPC using a portion of the VPC's IP address range.
+There are two common types:
+•	Public Subnet: A subnet whose route table provides a route to an Internet Gateway.
+•	Private Subnet: A subnet that does not have a direct route to an Internet Gateway.
+Subnet	CIDR	Usage
+Public Subnet	10.0.1.0/24	Web server
+Private Subnet	10.0.2.0/24	Database server
+ 
+3.3 Internet Gateway (IGW)
+An Internet Gateway allows communication between a VPC and the public internet.
+It acts like the main entrance and exit gate of a gated community.
+Example: If an EC2 instance in a public subnet needs internet connectivity, the VPC must have an Internet Gateway attached and the subnet's route table must have a route to it.
+ 
+3.4 Route Tables
+A Route Table contains rules that decide where network traffic should go.
+It acts like a road map that tells traffic which path to follow.
+Example:
+Destination	Target
+10.0.0.0/16	Local
+0.0.0.0/0	Internet Gateway
+•	10.0.0.0/16 represents the VPC's local network.
+•	0.0.0.0/0 represents all IPv4 destinations.
+•	The Internet Gateway is the target for internet-bound traffic.
+ 
+3.5 Security Groups
+A Security Group acts as a virtual firewall for an EC2 instance or other supported network resources.
+It controls:
+•	Inbound traffic: Traffic coming into the resource.
+•	Outbound traffic: Traffic leaving the resource.
+Type	Port	Purpose
+SSH	22	Connect to Linux server
+HTTP	80	Access website
+HTTPS	443	Secure website access
+ 
+3.6 Load Balancer (ELB)
+Elastic Load Balancing (ELB) distributes incoming application traffic across multiple targets, such as EC2 instances.
+It helps improve application availability and distributes traffic between servers.
+Example: Suppose a website runs on three EC2 instances. A load balancer distributes incoming user requests across those instances.
+ 
+3.7 NAT Gateway
+A NAT Gateway allows instances in a private subnet to initiate connections to the internet without allowing unsolicited internet connections to reach those instances.
+Example: A database-related server in a private subnet may need to download software updates. It can use a NAT Gateway to access the internet while remaining inaccessible through a direct inbound internet route.
+ 
+3.8 VPC Flow Logs
+VPC Flow Logs capture information about IP traffic going to and from network interfaces in a VPC.
+They help monitor and troubleshoot network traffic.
+Example: If an EC2 instance cannot communicate with another resource, Flow Logs can help investigate whether traffic was accepted or rejected.
+ 
+4. Public Subnet vs Private Subnet
+Public Subnet	Private Subnet
+Has a route to an Internet Gateway	Does not have a direct route to an Internet Gateway
+Can host public-facing resources	Commonly hosts internal resources
+Example: Web server	Example: Database server
+Internet access requires appropriate public IP and security rules	Outbound internet access can use a NAT Gateway
+5. Complete VPC Architecture Example
+Consider an application hosted on AWS.
+•	Users access the website through the internet.
+•	The Internet Gateway connects the VPC to the internet.
+•	The public subnet contains the Load Balancer and web servers.
+•	The private subnet contains the database server.
+•	The NAT Gateway provides outbound internet access for private subnet resources.
+•	Security Groups control traffic to and from resources.
+•	VPC Flow Logs capture network traffic information.
+ 
+End of Amazon VPC Training Notes.
