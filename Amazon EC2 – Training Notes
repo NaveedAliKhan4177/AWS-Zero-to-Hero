@@ -1,4 +1,5 @@
-Amazon EC2 – Training Notes
+Amazon EC2 – Training Notes.
+
 1. What is Amazon EC2?
 EC2 (Elastic Compute Cloud) is an AWS service that provides virtual servers in the cloud.
 These virtual servers are called EC2 Instances.
